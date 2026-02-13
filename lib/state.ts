@@ -19,9 +19,15 @@ const generateSystemPrompt = (lang1: string, lang2: string, topic: string) => {
 **CRITICAL INSTRUCTIONS:**
 1. DETECT the language of the input text (${lang1} or ${lang2}).
 2. TRANSLATE the input text into the other language.
-3. OUTPUT **ONLY** THE TRANSLATED TEXT.
+3. MIMIC the nuances of the source audio. This includes:
+   - Tone and emotion
+   - Speed and rhythm
+   - Emphasis and hesitation
+   - Formality level
+   - Any specific vocal characteristics that convey meaning.
 4. OUTPUT **ONLY** THE TRANSLATED TEXT.
 5. OUTPUT **ONLY** THE TRANSLATED TEXT.
+6. OUTPUT **ONLY** THE TRANSLATED TEXT.
 
 **DO NOT:**
 - DO NOT add any prefixes, labels, or explanations (e.g., "In Spanish: ...").

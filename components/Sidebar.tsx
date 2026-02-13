@@ -34,17 +34,7 @@ export default function Sidebar() {
       <div className="sidebar-content">
         <div className="sidebar-section">
           <fieldset disabled={connected}>
-            {isSuperAdmin && (
-              <label>
-                System Prompt
-                <textarea
-                  value={systemPrompt}
-                  onChange={e => setSystemPrompt(e.target.value)}
-                  rows={10}
-                  placeholder="Describe the role and personality of the AI..."
-                />
-              </label>
-            )}
+
             <label>
               Voice
               <select value={voice} onChange={e => setVoice(e.target.value)}>
