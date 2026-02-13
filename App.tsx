@@ -47,12 +47,15 @@ function App() {
     if (!user) return;
 
     const unsub = useSettings.subscribe((state, prevState) => {
-      const changes: Partial<{ systemPrompt: string; voice: string }> = {};
+      const changes: Partial<{ systemPrompt: string; voice1: string; voice2: string }> = {};
       if (state.systemPrompt !== prevState.systemPrompt) {
         changes.systemPrompt = state.systemPrompt;
       }
-      if (state.voice !== prevState.voice) {
-        changes.voice = state.voice;
+      if (state.voice1 !== prevState.voice1) {
+        changes.voice1 = state.voice1;
+      }
+      if (state.voice2 !== prevState.voice2) {
+        changes.voice2 = state.voice2;
       }
       if (Object.keys(changes).length > 0) {
         updateUserSettings(user.id, changes);

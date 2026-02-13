@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 import { create } from 'zustand';
-import { DEFAULT_LIVE_API_MODEL, DEFAULT_VOICE } from './constants';
+import { DEFAULT_LIVE_API_MODEL, DEFAULT_VOICE_STAFF, DEFAULT_VOICE_GUEST } from './constants';
 import {
   FunctionDeclaration,
   FunctionResponse,
@@ -52,26 +52,30 @@ ${topicInstruction}
 export const useSettings = create<{
   systemPrompt: string;
   model: string;
-  voice: string;
+  voice1: string;
+  voice2: string;
   language1: string;
   language2: string;
   topic: string;
   setSystemPrompt: (prompt: string) => void;
   setModel: (model: string) => void;
-  setVoice: (voice: string) => void;
+  setVoice1: (voice: string) => void;
+  setVoice2: (voice: string) => void;
   setLanguage1: (language: string) => void;
   setLanguage2: (language: string) => void;
   setTopic: (topic: string) => void;
 }>((set, get) => ({
   systemPrompt: generateSystemPrompt('auto', 'English (US)', ''),
   model: DEFAULT_LIVE_API_MODEL,
-  voice: DEFAULT_VOICE,
+  voice1: DEFAULT_VOICE_STAFF,
+  voice2: DEFAULT_VOICE_GUEST,
   language1: 'auto',
   language2: 'English (US)',
   topic: '',
   setSystemPrompt: prompt => set({ systemPrompt: prompt }),
   setModel: model => set({ model }),
-  setVoice: voice => set({ voice }),
+  setVoice1: voice => set({ voice1: voice }),
+  setVoice2: voice => set({ voice2: voice }),
   setLanguage1: language => set({
     language1: language,
     systemPrompt: generateSystemPrompt(language, get().language2, get().topic)
@@ -91,10 +95,14 @@ export const useSettings = create<{
  */
 export const useUI = create<{
   isSidebarOpen: boolean;
+  activeTab: 'settings' | 'history';
   toggleSidebar: () => void;
+  setActiveTab: (tab: 'settings' | 'history') => void;
 }>(set => ({
   isSidebarOpen: false,
+  activeTab: 'settings',
   toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
+  setActiveTab: (tab: 'settings' | 'history') => set({ activeTab: tab }),
 }));
 
 /**
