@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import ControlTray from './components/console/control-tray/ControlTray';
 import ErrorScreen from './components/demo/ErrorScreen';
 import StreamingConsole from './components/demo/streaming-console/StreamingConsole';
+import LoginModal from './components/auth/LoginModal';
 
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -64,6 +65,10 @@ function App() {
 
     return () => unsub();
   }, [user]);
+
+  if (!user) {
+    return <LoginModal />;
+  }
 
   return (
     <div className="App">

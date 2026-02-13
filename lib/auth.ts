@@ -19,16 +19,30 @@ interface AuthState {
   isSuperAdmin: boolean;
   loading: boolean;
   loadingData: boolean;
+  signInWithId: (id: string) => Promise<void>;
   signOut: () => void;
 }
 
-export const useAuth = create<AuthState>(() => ({
-  session: { MOCKED: true }, 
-  user: { id: 'local-user', email: 'local-user@example.com' }, 
-  isSuperAdmin: true,
+export const useAuth = create<AuthState>((set) => ({
+  session: null,
+  user: null,
+  isSuperAdmin: false,
   loading: false,
   loadingData: false,
-  signOut: () => { /* No operation */ },
+  signInWithId: async (id: string) => {
+    // Basic validation: SI followed by 4 characters
+    const isValid = /^SI.{4}$/.test(id);
+    if (!isValid) {
+      throw new Error('Invalid ID format. Must start with SI followed by 4 characters.');
+    }
+
+    set({
+      user: { id, email: `${id}@eburon.ai` },
+      session: { id },
+      isSuperAdmin: id === 'SI0000', // Example: SI0000 is super admin
+    });
+  },
+  signOut: () => set({ user: null, session: null, isSuperAdmin: false }),
 }));
 
 // --- DATABASE HELPERS ---

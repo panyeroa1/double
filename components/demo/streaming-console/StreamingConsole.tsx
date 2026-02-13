@@ -19,12 +19,12 @@ import { useAuth, updateUserConversations, fetchUserConversations } from '../../
 
 export default function StreamingConsole() {
   const { client, setConfig } = useLiveAPIContext();
-  const { systemPrompt, voice, language1, language2 } = useSettings();
+  const { systemPrompt, voice1, language1, language2 } = useSettings();
   const { addHistoryItem } = useHistoryStore();
   const { user } = useAuth();
 
   const turns = useLogStore(state => state.turns);
-  
+
   // Fetch history on mount
   useEffect(() => {
     if (user) {
@@ -43,7 +43,7 @@ export default function StreamingConsole() {
       speechConfig: {
         voiceConfig: {
           prebuiltVoiceConfig: {
-            voiceName: voice,
+            voiceName: voice1,
           },
         },
       },
@@ -59,7 +59,7 @@ export default function StreamingConsole() {
     };
 
     setConfig(config);
-  }, [setConfig, systemPrompt, voice]);
+  }, [setConfig, systemPrompt, voice1]);
 
   useEffect(() => {
     const { addTurn, updateLastTurn } = useLogStore.getState();
