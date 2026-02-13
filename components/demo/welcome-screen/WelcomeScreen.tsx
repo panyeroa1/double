@@ -27,8 +27,8 @@ const WelcomeScreen: React.FC = () => {
     return (
       <div className="welcome-screen">
         <div className="welcome-content empty">
-          <h1>Multilinguahe</h1>
-          <p className="welcome-tagline">Native {language1} & {language2} Dual Translation</p>
+          <h1>Dual Translator</h1>
+          <p className="welcome-tagline">Native {language1} & {language2}Translation</p>
           <div className="status-indicator">
             <span className="dot"></span> Ready to translate
           </div>
