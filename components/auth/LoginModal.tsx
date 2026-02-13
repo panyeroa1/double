@@ -24,7 +24,7 @@ export default function LoginModal() {
     return (
         <div className="login-modal-overlay">
             <div className="login-modal">
-                <h2>Welcome to Eburon Orbit</h2>
+                <h2>Welcome to Succes Translator</h2>
                 <p className="login-instruction">Enter your Staff ID to continue.</p>
 
                 <form onSubmit={handleSubmit}>
