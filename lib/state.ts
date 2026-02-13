@@ -13,12 +13,17 @@ import {
 } from '@google/genai';
 
 const generateSystemPrompt = (lang1: string, lang2: string, topic: string) => {
+  const isAuto1 = lang1 === 'auto';
+  const isAuto2 = lang2 === 'auto';
+  const l1Desc = isAuto1 ? 'the detected language' : lang1;
+  const l2Desc = isAuto2 ? 'the detected language' : lang2;
+
   const topicInstruction = topic ? `The conversation is about: ${topic}. Please use appropriate terminology and context.` : '';
-  return `You are an expert language translator. Your only task is to translate text from ${lang1} to ${lang2}, or from ${lang2} to ${lang1}.
+  return `You are an expert language translator. Your only task is to translate text between ${l1Desc} and ${l2Desc}.
 
 **CRITICAL INSTRUCTIONS:**
-1. DETECT the language of the input text (${lang1} or ${lang2}).
-2. TRANSLATE the input text into the other language.
+1. DETECT the language of the input text.
+2. TRANSLATE the input text into the other language (e.g., if it is ${l1Desc}, translate it to ${l2Desc}; if it is ${l2Desc}, translate it to ${l1Desc}).
 3. MIMIC the nuances of the source audio. This includes:
    - Tone and emotion
    - Speed and rhythm
@@ -35,7 +40,7 @@ const generateSystemPrompt = (lang1: string, lang2: string, topic: string) => {
 - DO NOT add any commentary or remarks.
 - DO NOT ask questions.
 
-Your entire response must be the translated phrase. For example, if the input is "Hello" and the target language is Spanish, your output must be "Hola", not "The translation is Hola".
+Your entire response must be the translated phrase. For example, if the target language is Spanish, your output must be "Hola", not "The translation is Hola".
 ${topicInstruction}
 `;
 };
@@ -58,10 +63,10 @@ export const useSettings = create<{
   setLanguage2: (language: string) => void;
   setTopic: (topic: string) => void;
 }>((set, get) => ({
-  systemPrompt: generateSystemPrompt('Dutch', 'English (US)', ''),
+  systemPrompt: generateSystemPrompt('auto', 'English (US)', ''),
   model: DEFAULT_LIVE_API_MODEL,
   voice: DEFAULT_VOICE,
-  language1: 'Dutch',
+  language1: 'auto',
   language2: 'English (US)',
   topic: '',
   setSystemPrompt: prompt => set({ systemPrompt: prompt }),

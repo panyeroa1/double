@@ -48,7 +48,7 @@ export default function Sidebar() {
             <label>
               Language 1
               <select value={language1} onChange={e => setLanguage1(e.target.value)}>
-                {AVAILABLE_LANGUAGES.filter(lang => lang.value !== 'auto').map(lang => (
+                {AVAILABLE_LANGUAGES.map(lang => (
                   <option key={lang.value} value={lang.value}>
                     {lang.name}
                   </option>
