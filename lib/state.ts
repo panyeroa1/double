@@ -15,32 +15,49 @@ import {
 const generateSystemPrompt = (lang1: string, lang2: string, topic: string) => {
   const isAuto1 = lang1 === 'auto';
   const isAuto2 = lang2 === 'auto';
-  const l1Desc = isAuto1 ? 'the detected language' : lang1;
-  const l2Desc = isAuto2 ? 'the detected language' : lang2;
+
+  // If one language is auto-detected and the other is fixed (e.g. Staff is Dutch),
+  // we need specific instructions for the bidirectional flow.
+  let instruction = '';
+
+  if (isAuto1 && !isAuto2) {
+    // Visitor is Auto, Staff is Fixed (e.g. Dutch)
+    instruction = `
+    The conversation is between a Staff member (always speaking ${lang2}) and a Visitor (language to be detected).
+    
+    RULES:
+    1. If you hear ${lang2} (Staff), translate it to the language the Visitor most recently spoke. If the Visitor hasn't spoken yet, or the language is unknown, translate to English.
+    2. If you hear any other language (Visitor), translate it to ${lang2}.
+    `;
+  } else if (!isAuto1 && isAuto2) {
+    // Staff is Auto (unlikely based on requirements but possible), Visitor is Fixed
+    instruction = `
+    The conversation is between a Visitor (always speaking ${lang1}) and a Staff member (language to be detected).
+    
+    RULES:
+    1. If you hear ${lang1} (Visitor), translate it to the language the Staff most recently spoke.
+    2. If you hear any other language (Staff), translate it to ${lang1}.
+    `;
+  } else if (isAuto1 && isAuto2) {
+    instruction = `Detect the language of the audio and translate it to English if it is not English. If it is English, translate it to the other detected language from context.`;
+  } else {
+    // Both fixed
+    instruction = `Translate text from ${lang1} to ${lang2} and vice-versa.`;
+  }
 
   const topicInstruction = topic ? `The conversation is about: ${topic}. Please use appropriate terminology and context.` : '';
-  return `You are an expert language translator. Your only task is to translate text between ${l1Desc} and ${l2Desc}.
+
+  return `You are an expert, seamless voice interpreter. 
+${instruction}
 
 **CRITICAL INSTRUCTIONS:**
-1. DETECT the language of the input text.
-2. TRANSLATE the input text into the other language (e.g., if it is ${l1Desc}, translate it to ${l2Desc}; if it is ${l2Desc}, translate it to ${l1Desc}).
-3. MIMIC the nuances of the source audio. This includes:
-   - Tone and emotion
-   - Speed and rhythm
-   - Emphasis and hesitation
-   - Formality level
-   - Any specific vocal characteristics that convey meaning.
-4. OUTPUT **ONLY** THE TRANSLATED TEXT.
-5. OUTPUT **ONLY** THE TRANSLATED TEXT.
-6. OUTPUT **ONLY** THE TRANSLATED TEXT.
+1. **Output ONLY the translated text.** Do not include "Translation:", "In Dutch:", or any explanations.
+2. **MIMIC the speaker's voice elements**:
+   - Tone, emotion, speed, rhythm, emphasis.
+   - If the speaker is whispering, whisper. If they are excited, be excited.
+3. **Be accurate** in nuance and cultural context.
+4. **Do not hallucinate** or make up conversation. Only translate what is heard.
 
-**DO NOT:**
-- DO NOT add any prefixes, labels, or explanations (e.g., "In Spanish: ...").
-- DO NOT have a conversation.
-- DO NOT add any commentary or remarks.
-- DO NOT ask questions.
-
-Your entire response must be the translated phrase. For example, if the target language is Spanish, your output must be "Hola", not "The translation is Hola".
 ${topicInstruction}
 `;
 };
@@ -65,12 +82,12 @@ export const useSettings = create<{
   setLanguage2: (language: string) => void;
   setTopic: (topic: string) => void;
 }>((set, get) => ({
-  systemPrompt: generateSystemPrompt('auto', 'English (US)', ''),
+  systemPrompt: generateSystemPrompt('auto', 'Dutch (Flemish)', ''),
   model: DEFAULT_LIVE_API_MODEL,
   voice1: DEFAULT_VOICE_STAFF,
   voice2: DEFAULT_VOICE_GUEST,
   language1: 'auto',
-  language2: 'English (US)',
+  language2: 'Dutch (Flemish)',
   topic: '',
   setSystemPrompt: prompt => set({ systemPrompt: prompt }),
   setModel: model => set({ model }),
