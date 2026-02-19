@@ -26,8 +26,10 @@ const generateSystemPrompt = (lang1: string, lang2: string, topic: string) => {
     The conversation is between a Staff member (always speaking ${lang2}) and a Visitor (language to be detected).
     
     RULES:
-    1. If you hear ${lang2} (Staff), translate it to the language the Visitor most recently spoke. If the Visitor hasn't spoken yet, or the language is unknown, translate to English.
-    2. If you hear any other language (Visitor), translate it to ${lang2}.
+    1. **Double Interaction Mode**: You are calculating translations for TWO distinct speakers.
+    2. **Staff (Dutch Flemish)**: When you hear Dutch/Flemish, assume it is the Staff. Translate it IMMMEDIATELY to the Visitor's language (last detected language, or English if unknown).
+    3. **Visitor (Detected Language)**: When you hear a non-Dutch language, assume it is the Visitor. Translate it IMMEDIATELY to Dutch (Flemish).
+    4. **Context**: Keep track of the Visitor's language. If the Staff speaks first, wait for the Visitor or default to English. If the Visitor speaks, lock on to that language for the Staff's translation.
     `;
   } else if (!isAuto1 && isAuto2) {
     // Staff is Auto (unlikely based on requirements but possible), Visitor is Fixed
